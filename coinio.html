@@ -1,0 +1,216 @@
+<!DOCTYPE html>	
+<!-- this was origionally coded in python, then I had Chat GPT translate it ito HTML, the only change from the origional python code is that the python code did not save your progress -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coinio</title>
+    <style>
+        body {
+            font-family: monospace;
+        }
+        #mining-input-container {
+            display: none;
+            margin-top: 20px;
+        }
+        #mining-input-container label {
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        #mining-input-container input {
+            padding: 5px;
+            font-size: 16px;
+            width: 100px;
+            margin-top: 10px;
+        }
+        #action {
+            width: 200px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #proceed-input-container {
+            display: none;
+            margin-top: 20px;
+        }
+        #proceed-input-container input {
+            padding: 5px;
+            font-size: 16px;
+            width: 100px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Welcome to Coinio!</h1>
+
+    <pre id="game-info">
+        Welcome to Coinio, a crypto currency/meme coin like game that was created for fun. You will start with 10 coins. Type 'view' to see how much coin you have, type 'mine' to try and mine. 100 mines cost 1 coin as it is based on probability.
+        If you run out of coin, you can still mine, but if your coins go negative, the program will stop, the only way to restart is to use a different account. You can NOT trade coins for real money, please treat this just as a game, no real money is involved. The mining is done by picking 3 random numbers between 0 and 10, and if they all match, you get a coin. It is better to mine big chunks, rather than a couple at a time, because it will take a lot (1000 mines all at once will be 12 seconds, but 1000 mines broken up into chunks of 10 will take 1,300 seconds) longer to break it up, because of the way the mining is done.
+        Please use responsibly, and remember NO REAL MONEY IS OR SHOULD BE INVOLVED.
+    </pre>
+
+    <pre id="output"></pre>
+
+    <input type="text" id="action" placeholder="Type 'view' or 'mine'">
+    <div id="mining-input-container">
+        <label for="mining-input">How many mines would you like to do?</label>
+        <input type="text" id="mining-input" placeholder="Enter a number">
+    </div>
+    <div id="proceed-input-container">
+        <label for="proceed-input">Type 'proceed' to continue:</label>
+        <input type="text" id="proceed-input" placeholder="Enter 'proceed'">
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Get coins from localStorage or initialize to 10 if not available
+        let coins = parseInt(localStorage.getItem('coins')) || 10;
+        let output = document.getElementById('output');
+        let isMining = false;
+        let miningData = {};
+
+        // Check if the user is bankrupt
+        function checkBankruptcy() {
+            if (coins < 0) {
+                output.textContent += "You went bankrupt! Close and reopen the tab to restart.\n";
+                return true;
+            }
+            return false;
+        }
+
+        // Handle user action (view or mine)
+        document.getElementById('action').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                if (checkBankruptcy()) {
+                    return; // Stop further actions if bankrupt
+                }
+
+                const action = document.getElementById('action').value.toLowerCase().trim();
+
+                if (action === 'view') {
+                    output.textContent += `You currently have ${coins} coins.\n`;
+                } else if (action === 'mine' && !isMining) {
+                    // Hide the original "view/mine" input box when mining starts
+                    document.getElementById('action').style.display = 'none';
+                    output.textContent += "How many minings do you want to do (make sure you type in a positive integer)?\n";
+                    showMiningInput(); // Show the mining input
+                } else if (isMining && action === 'proceed') {
+                    mineCoins(miningData.nParsed, miningData.spent);
+                } else {
+                    output.textContent += "Invalid input! Please type 'view' to check coins, 'mine' to mine, or 'proceed' to continue mining.\n";
+                }
+
+                document.getElementById('action').value = ''; // Clear the input after each command
+            }
+        });
+
+        // Show the input field for the number of minings
+        function showMiningInput() {
+            document.getElementById('mining-input').value = ''; // Reset the input box
+            document.getElementById('mining-input-container').style.display = 'block'; // Show the input container
+            document.getElementById('mining-input').focus(); // Set focus on the input field immediately
+        }
+
+        // Handle the user's mining input when they press Enter
+        document.getElementById('mining-input').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                if (checkBankruptcy()) {
+                    return; // Stop further actions if bankrupt
+                }
+
+                const n = parseInt(document.getElementById('mining-input').value);
+                if (isNaN(n) || n <= 0) {
+                    output.textContent += "Please enter a valid positive number for mining attempts.\n";
+                    return;
+                }
+
+                const spent = n / 100;
+                output.textContent += `That will be ${spent} coins. Type 'proceed' to proceed.\n`;
+
+                // Store mining data to use in the next step
+                miningData = { nParsed: n, spent: spent };
+                isMining = true;
+                document.getElementById('mining-input-container').style.display = 'none'; // Hide the input field after submission
+                showProceedInput(); // Show the "proceed" input box
+            }
+        });
+
+        // Show the "proceed" input box
+        function showProceedInput() {
+            document.getElementById('proceed-input-container').style.display = 'block'; // Show the proceed input container
+            document.getElementById('proceed-input').focus(); // Set focus on the "proceed" input field
+        }
+
+        // Handle the user's "proceed" input when they press Enter
+        document.getElementById('proceed-input').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                if (checkBankruptcy()) {
+                    return; // Stop further actions if bankrupt
+                }
+
+                const proceed = document.getElementById('proceed-input').value.toLowerCase().trim();
+                if (proceed === 'proceed') {
+                    mineCoins(miningData.nParsed, miningData.spent);
+                } else {
+                    output.textContent += "Invalid input! Returning to the main menu...\n";
+                    resetToMainMenu(); // Return to the "view/mine" input box
+                }
+
+                document.getElementById('proceed-input').value = ''; // Clear the "proceed" input
+                document.getElementById('proceed-input-container').style.display = 'none'; // Hide "proceed" input after it's submitted
+            }
+        });
+
+        // Reset the game state to the main menu after invalid input
+        function resetToMainMenu() {
+            document.getElementById('proceed-input-container').style.display = 'none'; // Hide the "proceed" input box
+            document.getElementById('action').style.display = 'block'; // Show the "view/mine" input box again
+            document.getElementById('action').focus(); // Automatically focus on the main input box again
+        }
+
+        // Simulate the mining process with a delay based on the coin cost
+        function mineCoins(n, spent) {
+            if (checkBankruptcy()) {
+                return; // Stop further actions if bankrupt
+            }
+
+            output.textContent += "Mining...\n"; // Display "Mining..." immediately
+
+            const waitTime = spent * 1000 + 2000; // Wait time = (coins spent * 1000ms) + 2000ms delay
+
+            setTimeout(function() {
+                coins -= spent;
+                let gained = 0;
+
+                for (let i = 0; i < n; i++) {
+                    const a = Math.floor(Math.random() * 11);
+                    const b = Math.floor(Math.random() * 11);
+                    const c = Math.floor(Math.random() * 11);
+                    if (a === b && b === c) {
+                        coins += 1;
+                        gained += 1;
+                    }
+                }
+
+                const profit = gained - spent;
+                output.textContent += `You spent ${spent} coins and gained ${gained} coins. Your overall profit was ${profit} coins.\n`;
+
+                if (coins < 0) {
+                    output.textContent += "You went bankrupt! You cannot restart, unless you use a different account.\n";
+                }
+
+                // Save the current coins to localStorage
+                localStorage.setItem('coins', coins);
+
+                isMining = false;  // Reset mining state
+                // Re-show the "view/mine" input box after mining is complete
+                document.getElementById('action').style.display = 'block';
+                document.getElementById('action').focus(); // Automatically focus back on the main input box
+            }, waitTime); // Adjust the delay based on the coin cost and an additional 2 seconds
+        }
+    </script>
+
+</body>
+</html>
