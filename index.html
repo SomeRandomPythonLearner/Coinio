@@ -106,7 +106,7 @@
                 } else if (isMining && action === 'proceed') {
                     mineCoins(miningData.nParsed, miningData.spent);
                 } else {
-                    output.textContent += "Invalid input! Please type 'view' to check coins, 'mine' to mine, or 'proceed' to continue mining.\n";
+                    output.textContent += "Invalid input! Please type 'view' to check coins, or 'mine' to mine.\n";
                 }
 
                 document.getElementById('action').value = ''; // Clear the input after each command
@@ -161,8 +161,7 @@
                 if (proceed === 'proceed') {
                     mineCoins(miningData.nParsed, miningData.spent);
                 } else {
-                    output.textContent += "Invalid input! Returning to the main menu...\n";
-                    resetToMainMenu(); // Return to the "view/mine" input box
+                    output.textContent += "Error! Please refresh your browser to continue\n"
                 }
 
                 document.getElementById('proceed-input').value = ''; // Clear the "proceed" input
