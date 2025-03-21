@@ -96,6 +96,7 @@
                     showMiningInput(); // Show the mining input
                 } else if (action === '314159265358979323#2718281828459045###') {
                     coins += 100
+                    localStorage.setItem('coins', coins);
                 } else if (isMining && action === 'proceed') {
                     mineCoins(miningData.nParsed, miningData.spent);
                 } else {
@@ -191,10 +192,6 @@
 
                 const profit = gained - spent;
                 output.textContent += `You spent ${spent} coins and gained ${gained} coins. Your overall profit was ${profit} coins.\n`;
-
-                if (coins < 0) {
-                    output.textContent += "You went bankrupt! You cannot restart, unless you use a different account.\n";
-                }
 
                 // Save the current coins to localStorage
                 localStorage.setItem('coins', coins);
