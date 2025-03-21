@@ -1,0 +1,1 @@
+Coinio is not money.
