@@ -78,15 +78,6 @@
         let isMining = false;
         let miningData = {};
 
-        // Check if the user is bankrupt
-        function checkBankruptcy() {
-            if (coins < 0) {
-                output.textContent += "You went bankrupt! You can try again on another account or use private browsing to play forever!\n";
-                return true;
-            }
-            return false;
-        }
-
         // Handle user action (view or mine)
         document.getElementById('action').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
@@ -103,7 +94,7 @@
                     document.getElementById('action').style.display = 'none';
                     output.textContent += "How many minings do you want to do (make sure you type in a positive integer)?\n";
                     showMiningInput(); // Show the mining input
-                } else if (action === '2718281828459045') {
+                } else if (action === '314159265358979323#2718281828459045###') {
                     coins += 100
                 } else if (isMining && action === 'proceed') {
                     mineCoins(miningData.nParsed, miningData.spent);
@@ -180,10 +171,6 @@
 
         // Simulate the mining process with a delay based on the coin cost
         function mineCoins(n, spent) {
-            if (checkBankruptcy()) {
-                return; // Stop further actions if bankrupt
-            }
-
             output.textContent += "Mining...\n"; // Display "Mining..." immediately
 
             const waitTime = spent * 1000 + 2000; // Wait time = (coins spent * 1000ms) + 2000ms delay
