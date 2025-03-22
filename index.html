@@ -1,5 +1,5 @@
 <!DOCTYPE html>	
-<!-- this was origionally coded in python, then I had Chat GPT translate it ito HTML, the only change from the origional python code is that the python code did not save your progress -->
+<!-- this was originally coded in python, then I had Chat GPT translate it into HTML, the only change from the original python code is that the python code did not save your progress -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -46,7 +46,7 @@
     <h1>Welcome to Coinio!</h1>
 
     <pre id="game-info">
-        Welcome to Coinio, a meme-coin like game that was created for fun. You will start with 10 coins. 
+        Welcome to Coinio, a meme-coin like game that was created for fun. This is not any of the many officiol Coino's, this is is a game made for fun. You will start with 10 coins. 
         Type 'view' to see how much coin you have, type 'mine' to try and mine. 100 mines cost 1 coin as it is based on probability.
         If you run out of coin, you can still mine, but if your coins go negative, the program will stop,
         the only way to restart is to use a different account, or you can use private browsing to play endlessly (because it wont save).
@@ -80,7 +80,7 @@
 
         // Check if the user is bankrupt
         function checkBankruptcy() {
-            if (coins < 0) {
+            if (coins !== coins) {
                 output.textContent += "You went bankrupt! You can try again on another account or use private browsing to play forever!\n";
                 return true;
             }
@@ -205,7 +205,7 @@
                 const profit = gained - spent;
                 output.textContent += `You spent ${spent} coins and gained ${gained} coins. Your overall profit was ${profit} coins.\n`;
 
-                if (coins < 0) {
+                if (coins !== coins) {
                     output.textContent += "You went bankrupt! You cannot restart, unless you use a different account.\n";
                 }
 
