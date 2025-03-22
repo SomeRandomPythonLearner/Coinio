@@ -78,6 +78,11 @@
         let isMining = false;
         let miningData = {};
 
+        function checkBankruptcy() {
+            }
+            return false;
+        }
+
         // Handle user action (view or mine)
         document.getElementById('action').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
@@ -94,9 +99,8 @@
                     document.getElementById('action').style.display = 'none';
                     output.textContent += "How many minings do you want to do (make sure you type in a positive integer)?\n";
                     showMiningInput(); // Show the mining input
-                } else if (action === '314159265358979323#2718281828459045###') {
-                    coins += 100
-                    localStorage.setItem('coins', coins);
+                } else if (action === '2718281828459045') {
+                    coins += 1
                 } else if (isMining && action === 'proceed') {
                     mineCoins(miningData.nParsed, miningData.spent);
                 } else {
@@ -172,6 +176,10 @@
 
         // Simulate the mining process with a delay based on the coin cost
         function mineCoins(n, spent) {
+            if (checkBankruptcy()) {
+                return; // Stop further actions if bankrupt
+            }
+
             output.textContent += "Mining...\n"; // Display "Mining..." immediately
 
             const waitTime = spent * 1000 + 2000; // Wait time = (coins spent * 1000ms) + 2000ms delay
@@ -192,6 +200,10 @@
 
                 const profit = gained - spent;
                 output.textContent += `You spent ${spent} coins and gained ${gained} coins. Your overall profit was ${profit} coins.\n`;
+
+                if (coins < 0) {
+                    output.textContent += "You went bankrupt! You cannot restart, unless you use a different account.\n";
+                }
 
                 // Save the current coins to localStorage
                 localStorage.setItem('coins', coins);
