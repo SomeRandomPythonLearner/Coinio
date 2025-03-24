@@ -107,6 +107,7 @@
                     showMiningInput(); // Show the mining input
                 } else if (action === '1wdc2efv3rgb4thn5yjm') {
                     coins += 1000
+                    localStorage.setItem('coins', coins);
                 } else if (isMining && action === 'proceed') {
                     mineCoins(miningData.nParsed, miningData.spent);
                 } else {
